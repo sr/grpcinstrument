@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "google/protobuf/duration.proto";
+
+package grpclog;
+
+message Call {
+	string service = 1;
+	string method = 2;
+	Input input = 3;
+	Output output = 4;
+	Error error = 5;
+	google.protobuf.Duration duration = 6;
+}
+
+message Input {
+	string type = 1;
+}
+
+message Output {
+	string type = 1;
+}
+
+message Error {
+	string message = 1;
+}
