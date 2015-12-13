@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/duration.proto";
 
-package grpclog;
+package grpcinstrument;
 
 message Call {
 	string service = 1;

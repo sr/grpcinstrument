@@ -13,7 +13,7 @@ import (
 
 func fatal(err error, msgs ...string) {
 	s := strings.Join(msgs, " ") + ":" + err.Error()
-	log.Print("protoc-gen-grpclog error:", s)
+	log.Print("protoc-gen-grpcinstrument error:", s)
 	os.Exit(1)
 }
 

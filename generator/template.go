@@ -16,37 +16,37 @@ type methodDescriptor struct {
 	OutputType string
 }
 
-var loggerTemplate = template.Must(template.New("log_api_server.go").Parse(`
+var loggerTemplate = template.Must(template.New("instrumented_api_server.go").Parse(`
 package {{.Package}}
 
 import (
 	"time"
 	"golang.org/x/net/context"
-	"github.com/sr/operator/src/grpclog"
+	"github.com/sr/operator/src/grpcinstrument"
 	"github.com/rcrowley/go-metrics"
 )
 
-type logAPIServer struct {
-	logger grpclog.Logger
+type instrumentedAPIServer struct {
+	logger grpcinstrument.Logger
 	metrics metrics.Registry
 	delegate {{.ServerInterface}}
 }
 
-func NewLogAPIServer(
-	logger grpclog.Logger,
+func NewInstrumentedAPIServer(
+	logger grpcinstrument.Logger,
 	metrics metrics.Registry,
 	delegate {{.ServerInterface}},
-) *logAPIServer {
-	return &logAPIServer{logger, metrics, delegate}
+) *instrumentedAPIServer {
+	return &instrumentedAPIServer{logger, metrics, delegate}
 }
 
 {{range .Methods}}
-func (a *logAPIServer) {{.Name}}(
+func (a *instrumentedAPIServer) {{.Name}}(
 	ctx context.Context,
 	request *{{.InputType}},
 ) (response *{{.OutputType}}, err error) {
 	defer func(start time.Time) {
-		grpclog.Instrument(
+		grpcinstrument.Instrument(
 			a.logger,
 			a.metrics,
 			"{{.Service}}",
