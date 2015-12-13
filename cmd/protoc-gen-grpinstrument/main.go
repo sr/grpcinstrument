@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/gogo/protobuf/proto"
-	plugin "github.com/gogo/protobuf/protoc-gen-gogo/plugin"
+	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 	"github.com/sr/operator/src/grpcinstrument/generator"
 )
 

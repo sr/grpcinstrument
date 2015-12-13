@@ -7,9 +7,9 @@ import (
 	"path"
 	"strings"
 
-	"github.com/gogo/protobuf/proto"
-	google_protobuf "github.com/gogo/protobuf/protoc-gen-gogo/descriptor"
-	plugin "github.com/gogo/protobuf/protoc-gen-gogo/plugin"
+	"github.com/golang/protobuf/proto"
+	"github.com/golang/protobuf/protoc-gen-go/descriptor"
+	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 )
 
 type Generator interface {
@@ -22,13 +22,13 @@ func NewGenerator(request *plugin.CodeGeneratorRequest) Generator {
 
 type generator struct {
 	request        *plugin.CodeGeneratorRequest
-	messagesByName map[string]*google_protobuf.DescriptorProto
+	messagesByName map[string]*descriptor.DescriptorProto
 }
 
 func newGenerator(request *plugin.CodeGeneratorRequest) *generator {
 	return &generator{
 		request,
-		make(map[string]*google_protobuf.DescriptorProto),
+		make(map[string]*descriptor.DescriptorProto),
 	}
 }
 
@@ -39,7 +39,7 @@ func (g *generator) Generate() (*plugin.CodeGeneratorResponse, error) {
 	}
 	response := &plugin.CodeGeneratorResponse{}
 	response.File = make([]*plugin.CodeGeneratorResponse_File, numFiles)
-	filesByName := make(map[string]*google_protobuf.FileDescriptorProto, numFiles)
+	filesByName := make(map[string]*descriptor.FileDescriptorProto, numFiles)
 	for _, file := range g.request.ProtoFile {
 		filesByName[file.GetName()] = file
 	}
@@ -59,7 +59,7 @@ func (g *generator) Generate() (*plugin.CodeGeneratorResponse, error) {
 }
 
 func (g *generator) generateFile(
-	file *google_protobuf.FileDescriptorProto,
+	file *descriptor.FileDescriptorProto,
 ) (content string, err error) {
 	if len(file.Service) != 1 {
 		return "", errors.New("can only generate script for exactly one service")
@@ -83,7 +83,7 @@ func (g *generator) generateFile(
 
 func newMethodDescriptor(
 	service string,
-	method *google_protobuf.MethodDescriptorProto,
+	method *descriptor.MethodDescriptorProto,
 ) *methodDescriptor {
 	return &methodDescriptor{
 		Service:    service,
