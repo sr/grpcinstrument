@@ -3,17 +3,21 @@ package generator
 import "text/template"
 
 type fileDescriptor struct {
-	Package         string
-	Service         string
+	Package  string
+	Services []*serviceDescriptor
+}
+
+type serviceDescriptor struct {
 	ServerInterface string
 	Methods         []*methodDescriptor
 }
 
 type methodDescriptor struct {
-	Service    string
-	Name       string
-	InputType  string
-	OutputType string
+	Service         string
+	ServerInterface string
+	Name            string
+	InputType       string
+	OutputType      string
 }
 
 var loggerTemplate = template.Must(template.New("instrumented_api_server.go").Parse(`
@@ -25,23 +29,24 @@ import (
 	"github.com/sr/operator/src/grpcinstrument"
 )
 
-type instrumentedAPIServer struct {
+{{range .Services}}
+type instrumented{{.ServerInterface}} struct {
 	instrumentator grpcinstrument.Instrumentator
 	delegate {{.ServerInterface}}
 }
-
-func NewInstrumentedAPIServer(
+{{end}}
+{{range .Services}}
+func NewInstrumented{{.ServerInterface}}(
 	instrumentator grpcinstrument.Instrumentator,
 	delegate {{.ServerInterface}},
-) *instrumentedAPIServer {
-	return &instrumentedAPIServer{
+) *instrumented{{.ServerInterface}} {
+	return &instrumented{{.ServerInterface}}{
 		instrumentator,
 		delegate,
 	}
 }
-
 {{range .Methods}}
-func (a *instrumentedAPIServer) {{.Name}}(
+func (a *instrumented{{.ServerInterface}}) {{.Name}}(
 	ctx context.Context,
 	request *{{.InputType}},
 ) (response *{{.OutputType}}, err error) {
@@ -58,4 +63,4 @@ func (a *instrumentedAPIServer) {{.Name}}(
 	}(time.Now())
 	return a.delegate.{{.Name}}(ctx, request)
 }
-{{end}}`))
+{{end}}{{end}}`))

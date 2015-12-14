@@ -25,7 +25,7 @@ func NewGenerator(request *plugin.CodeGeneratorRequest) *Generator {
 	return &Generator{request}
 }
 
-func (g *generator) Generate() (*plugin.CodeGeneratorResponse, error) {
+func (g *Generator) Generate() (*plugin.CodeGeneratorResponse, error) {
 	numFiles := len(g.request.FileToGenerate)
 	if numFiles == 0 {
 		return nil, errors.New("no file to generate")
@@ -51,37 +51,32 @@ func (g *generator) Generate() (*plugin.CodeGeneratorResponse, error) {
 	return response, nil
 }
 
-func (g *generator) generateFile(
+func (g *Generator) generateFile(
 	file *descriptor.FileDescriptorProto,
 ) (content string, err error) {
-	if len(file.Service) != 1 {
-		return "", errors.New("TODO(sr) can only generate script for exactly one service")
-	}
-	service := file.Service[0]
 	descriptor := &fileDescriptor{
-		Service:         file.GetPackage(),
-		Package:         file.GetPackage(),
-		ServerInterface: fmt.Sprintf("%sServer", service.GetName()),
-		Methods:         make([]*methodDescriptor, len(service.Method)),
+		Package:  file.GetPackage(),
+		Services: make([]*serviceDescriptor, len(file.Service)),
 	}
-	for i, method := range service.Method {
-		descriptor.Methods[i] = newMethodDescriptor(file.GetPackage(), method)
+	for i, service := range file.Service {
+		serviceDescriptor := &serviceDescriptor{
+			ServerInterface: fmt.Sprintf("%sServer", service.GetName()),
+			Methods:         make([]*methodDescriptor, len(service.Method)),
+		}
+		for n, method := range service.Method {
+			serviceDescriptor.Methods[n] = &methodDescriptor{
+				Service:         descriptor.Package,
+				ServerInterface: serviceDescriptor.ServerInterface,
+				Name:            method.GetName(),
+				InputType:       strings.Split(method.GetInputType(), ".")[2],
+				OutputType:      strings.Split(method.GetOutputType(), ".")[2],
+			}
+		}
+		descriptor.Services[i] = serviceDescriptor
 	}
 	var buffer bytes.Buffer
 	if err := loggerTemplate.Execute(&buffer, descriptor); err != nil {
 		return "", err
 	}
 	return buffer.String(), nil
-}
-
-func newMethodDescriptor(
-	service string,
-	method *descriptor.MethodDescriptorProto,
-) *methodDescriptor {
-	return &methodDescriptor{
-		Service:    service,
-		Name:       method.GetName(),
-		InputType:  strings.Split(method.GetInputType(), ".")[2],
-		OutputType: strings.Split(method.GetOutputType(), ".")[2],
-	}
 }
