@@ -12,24 +12,17 @@ import (
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
 )
 
-type Generator interface {
-	Generate() (*plugin.CodeGeneratorResponse, error)
+const (
+	prefix = "namespaced_"
+	suffix = "-gen.go"
+)
+
+type Generator struct {
+	request *plugin.CodeGeneratorRequest
 }
 
-func NewGenerator(request *plugin.CodeGeneratorRequest) Generator {
-	return newGenerator(request)
-}
-
-type generator struct {
-	request        *plugin.CodeGeneratorRequest
-	messagesByName map[string]*descriptor.DescriptorProto
-}
-
-func newGenerator(request *plugin.CodeGeneratorRequest) *generator {
-	return &generator{
-		request,
-		make(map[string]*descriptor.DescriptorProto),
-	}
+func NewGenerator(request *plugin.CodeGeneratorRequest) *Generator {
+	return &Generator{request}
 }
 
 func (g *generator) Generate() (*plugin.CodeGeneratorResponse, error) {
@@ -49,9 +42,9 @@ func (g *generator) Generate() (*plugin.CodeGeneratorResponse, error) {
 			return nil, err
 		}
 		dir, file := path.Split(filePath)
-		genFile := strings.Replace(file, path.Ext(file), "-gen.go", 1)
+		genFile := strings.Replace(file, path.Ext(file), suffix, 1)
 		response.File[i] = &plugin.CodeGeneratorResponse_File{
-			Name:    proto.String(fmt.Sprintf("%s/log_%s", dir, genFile)),
+			Name:    proto.String(fmt.Sprintf("%s/%s%s", dir, prefix, genFile)),
 			Content: proto.String(content),
 		}
 	}
@@ -62,7 +55,7 @@ func (g *generator) generateFile(
 	file *descriptor.FileDescriptorProto,
 ) (content string, err error) {
 	if len(file.Service) != 1 {
-		return "", errors.New("can only generate script for exactly one service")
+		return "", errors.New("TODO(sr) can only generate script for exactly one service")
 	}
 	service := file.Service[0]
 	descriptor := &fileDescriptor{
