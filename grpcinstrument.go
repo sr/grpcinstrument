@@ -4,17 +4,20 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/rcrowley/go-metrics"
 	"go.pedge.io/proto/time"
 )
 
-type Logger interface {
+type Instrumentator interface {
 	Log(*Call)
+	Increment(counterName string)
+}
+
+func (c *Call) IsError() bool {
+	return c.Error != nil
 }
 
 func Instrument(
-	logger Logger,
-	registry metrics.Registry,
+	instrumentator Instrumentator,
 	serviceName string,
 	methodName string,
 	inputType string,
@@ -32,6 +35,11 @@ func Instrument(
 	if err != nil {
 		call.Error = &Error{Message: err.Error()}
 	}
-	logger.Log(call)
-	metrics.GetOrRegisterCounter(fmt.Sprintf("%s.methods.%s.calls", call.Service, call.Method), registry).Inc(1)
+	metric := fmt.Sprintf("%s.methods.%s", call.Service, call.Method)
+	if call.IsError() {
+		instrumentator.Increment(fmt.Sprintf("%s.errors", metric))
+	}
+	instrumentator.Increment(fmt.Sprintf("%s.calls", metric))
+	instrumentator.Increment(fmt.Sprintf("%s.success", metric))
+	instrumentator.Log(call)
 }

@@ -27,17 +27,18 @@ import (
 )
 
 type instrumentedAPIServer struct {
-	logger grpcinstrument.Logger
-	metrics metrics.Registry
+	instrumentator grpcinstrument.Instrumentator
 	delegate {{.ServerInterface}}
 }
 
 func NewInstrumentedAPIServer(
-	logger grpcinstrument.Logger,
-	metrics metrics.Registry,
+	instrumentator grpcinstrument.Instrumentator,
 	delegate {{.ServerInterface}},
 ) *instrumentedAPIServer {
-	return &instrumentedAPIServer{logger, metrics, delegate}
+	return &instrumentedAPIServer{
+		instrumentator,
+		delegate,
+	}
 }
 
 {{range .Methods}}
@@ -47,8 +48,7 @@ func (a *instrumentedAPIServer) {{.Name}}(
 ) (response *{{.OutputType}}, err error) {
 	defer func(start time.Time) {
 		grpcinstrument.Instrument(
-			a.logger,
-			a.metrics,
+			a.instrumentator,
 			"{{.Service}}",
 			"{{.Name}}",
 			"{{.InputType}}",
