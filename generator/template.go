@@ -23,7 +23,6 @@ import (
 	"time"
 	"golang.org/x/net/context"
 	"github.com/sr/operator/src/grpcinstrument"
-	"github.com/rcrowley/go-metrics"
 )
 
 type instrumentedAPIServer struct {
