@@ -7,6 +7,11 @@ instruments gRPC servers and an implementation of the `Instrumentator` interface
 that logs requests to any of the backends supported by [protolog][] and exposes
 metrics about requests using [Prometheus][].
 
+[gRPC]: http://www.grpc.io
+[pb]: https://developers.google.com/protocol-buffers/?hl=en
+[protolog]: https://github.com/peter-edge/go-protolog
+[Prometheus]: http://prometheus.io
+
 [Checkout the godoc][godoc] online or download this package and view them
 locally:
 
