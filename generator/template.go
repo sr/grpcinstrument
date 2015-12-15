@@ -26,7 +26,7 @@ package {{.Package}}
 import (
 	"time"
 	"golang.org/x/net/context"
-	"github.com/sr/operator/src/grpcinstrument"
+	"github.com/sr/grpcinstrument"
 )
 
 {{range .Services}}
