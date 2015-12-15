@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	prefix = "namespaced_"
+	prefix = "instrumented_"
 	suffix = "-gen.go"
 )
 
