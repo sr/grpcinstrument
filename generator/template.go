@@ -32,17 +32,17 @@ import (
 {{range .Services}}
 type instrumented{{.ServerInterface}} struct {
 	instrumentator grpcinstrument.Instrumentator
-	delegate {{.ServerInterface}}
+	server {{.ServerInterface}}
 }
 {{end}}
 {{range .Services}}
 func NewInstrumented{{.ServerInterface}}(
 	instrumentator grpcinstrument.Instrumentator,
-	delegate {{.ServerInterface}},
+	server {{.ServerInterface}},
 ) *instrumented{{.ServerInterface}} {
 	return &instrumented{{.ServerInterface}}{
 		instrumentator,
-		delegate,
+		server,
 	}
 }
 {{range .Methods}}
@@ -61,6 +61,6 @@ func (a *instrumented{{.ServerInterface}}) {{.Name}}(
 			start,
 		)
 	}(time.Now())
-	return a.delegate.{{.Name}}(ctx, request)
+	return a.server.{{.Name}}(ctx, request)
 }
 {{end}}{{end}}`))
