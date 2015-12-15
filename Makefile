@@ -39,7 +39,7 @@ clean:
 proto:
 	go get -v go.pedge.io/protoeasy/cmd/protoeasy
 	go get -v go.pedge.io/pkg/cmd/strip-package-comments
-	protoeasy --go --grpc --grpc-gateway --go-import-path go.pedge.io/protolog .
+	protoeasy --go --go-import-path github.com/sr/grpcinstrument .
 	find . -name *\.pb\*\.go | xargs strip-package-comments
 
 .PHONY: \
