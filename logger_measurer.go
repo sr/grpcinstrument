@@ -20,7 +20,7 @@ func (i *loggerMeasurer) Init() error {
 	return nil
 }
 
-// Instrument proxies proxies to the logger and measurer.
+// Instrument proxies to the logger and measurer.
 func (i *loggerMeasurer) Instrument(call *Call) {
 	i.logger.Log(call)
 	i.measurer.Measure(call)
