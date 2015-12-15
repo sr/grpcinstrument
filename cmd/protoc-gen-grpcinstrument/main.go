@@ -8,7 +8,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/sr/operator/src/grpcinstrument/generator"
+	"github.com/sr/grpcinstrument/generator"
 )
 
 func fatal(err error, msgs ...string) {
