@@ -34,8 +34,8 @@ type Measurer interface {
 	Measure(*Call)
 }
 
-// LoggerMeasurer implements the most common use case of the Instrumentator
-// interface, logging RPC calls and collecting metrics about them.
+// NewLoggerMeasurer constructs an implementation of the Instrumentator interface
+// for its most common use case, logging and collecting metrics about RPC calls.
 func NewLoggerMeasurer(logger Logger, measurer Measurer) Instrumentator {
 	return newLoggerMeasurer(logger, measurer)
 }

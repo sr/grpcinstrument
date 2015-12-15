@@ -18,7 +18,9 @@ locally:
     $ go get github.com/sr/grpcinstrument/...
     $ godoc github.com/sr/grpcinstrument
 
-To generate instrumentation stubs first install the compiler plugin:
+[godoc]: https://godoc.org/github.com/sr/grpcinstrument
+
+To generate instrumentation stubs install the compiler plugin:
 
     $ go install github.com/sr/grpcinstrument/...
 
