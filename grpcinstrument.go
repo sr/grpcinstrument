@@ -7,6 +7,7 @@ import (
 )
 
 type Instrumentator interface {
+	Init() error
 	Log(*Call)
 	CollectMetrics(*Call)
 }
