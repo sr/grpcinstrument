@@ -9,7 +9,7 @@ import (
 type Instrumentator interface {
 	Init() error
 	Log(*Call)
-	CollectMetrics(*Call)
+	Measure(*Call)
 }
 
 func Instrument(
@@ -31,7 +31,7 @@ func Instrument(
 	if err != nil {
 		call.Error = &Error{Message: err.Error()}
 	}
-	instrumentator.CollectMetrics(call)
+	instrumentator.Measure(call)
 	instrumentator.Log(call)
 }
 
