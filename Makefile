@@ -15,6 +15,9 @@ updatetestdeps:
 build: deps
 	go build ./...
 
+install:
+	go install ./...
+
 lint: testdeps
 	go get -v github.com/golang/lint/golint
 	for file in $$(find . -name '*.go' | grep -v '\.pb.go$$' | grep -v '\.pb.log.go$$'); do \
@@ -41,6 +44,7 @@ proto:
 	go get -v go.pedge.io/pkg/cmd/strip-package-comments
 	protoeasy --go --go-import-path github.com/sr/grpcinstrument .
 	find . -name *\.pb\*\.go | xargs strip-package-comments
+	protoc --grpcinstrument_out=. example/example.proto
 
 .PHONY: \
 	all \
