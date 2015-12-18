@@ -14,6 +14,8 @@ var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
 
+// Call represents a completed gRPC call. The Error field will be non-nil if
+// it resulted in an error.
 type Call struct {
 	Service  string                    `protobuf:"bytes,1,opt,name=service" json:"service,omitempty"`
 	Method   string                    `protobuf:"bytes,2,opt,name=method" json:"method,omitempty"`

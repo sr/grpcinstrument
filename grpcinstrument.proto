@@ -4,6 +4,8 @@ import "google/protobuf/duration.proto";
 
 package grpcinstrument;
 
+// Call represents a completed gRPC call. The Error field will be non-nil if
+// it resulted in an error.
 message Call {
 	string service = 1;
 	string method = 2;
