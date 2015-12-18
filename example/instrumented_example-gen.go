@@ -8,23 +8,28 @@ import (
 )
 
 
-type instrumentedExampleServer struct {
+// InstrumentedExampleServer implements and instruments ExampleServer
+// using the grpcinstrument package.
+type InstrumentedExampleServer struct {
 	instrumentator grpcinstrument.Instrumentator
 	server ExampleServer
 }
 
 
+// NewInstrumentedExampleServer constructs a instrumentation wrapper for
+// ExampleServer.
 func NewInstrumentedExampleServer(
 	instrumentator grpcinstrument.Instrumentator,
 	server ExampleServer,
-) *instrumentedExampleServer {
-	return &instrumentedExampleServer{
+) *InstrumentedExampleServer {
+	return &InstrumentedExampleServer{
 		instrumentator,
 		server,
 	}
 }
 
-func (a *instrumentedExampleServer) Hello(
+// Hello instruments the ExampleServer.Hello method.
+func (a *InstrumentedExampleServer) Hello(
 	ctx context.Context,
 	request *HelloRequest,
 ) (response *HelloResponse, err error) {
