@@ -39,9 +39,10 @@ test: testdeps pretest
 clean:
 	go clean -i ./...
 
-proto:
+proto: install
 	go get -v go.pedge.io/protoeasy/cmd/protoeasy
 	go get -v go.pedge.io/pkg/cmd/strip-package-comments
+	go get -v github.com/golang/protobuf/protoc-gen-go/...
 	protoeasy --go --go-import-path github.com/sr/grpcinstrument .
 	find . -name *\.pb\*\.go | xargs strip-package-comments
 	protoc --grpcinstrument_out=. example/example.proto
