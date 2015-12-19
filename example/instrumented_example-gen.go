@@ -2,9 +2,9 @@
 package example
 
 import (
-	"time"
-	"golang.org/x/net/context"
 	"github.com/sr/grpcinstrument"
+	"golang.org/x/net/context"
+	"time"
 )
 
 
@@ -12,7 +12,7 @@ import (
 // using the grpcinstrument package.
 type InstrumentedExampleServer struct {
 	instrumentator grpcinstrument.Instrumentator
-	server ExampleServer
+	server         ExampleServer
 }
 
 

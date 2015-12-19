@@ -24,9 +24,9 @@ var loggerTemplate = template.Must(template.New("instrumented_api_server.go").Pa
 package {{.Package}}
 
 import (
-	"time"
-	"golang.org/x/net/context"
 	"github.com/sr/grpcinstrument"
+	"golang.org/x/net/context"
+	"time"
 )
 
 {{range .Services}}
@@ -34,7 +34,7 @@ import (
 // using the grpcinstrument package.
 type Instrumented{{.ServerInterface}} struct {
 	instrumentator grpcinstrument.Instrumentator
-	server {{.ServerInterface}}
+	server         {{.ServerInterface}}
 }
 {{end}}
 {{range .Services}}
